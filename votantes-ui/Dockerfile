@@ -1,30 +1,28 @@
-# Etapa 1: Construcción (builder)
-FROM node:18-alpine as builder
-
-# Establecer el directorio de trabajo para la etapa de construcción
+# Stage 1: Build the Angular application
+FROM node:slim as builder
 WORKDIR /app
 
-# Copiar package.json y package-lock.json para instalar dependencias
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm ci
 
-# Instalar dependencias
-RUN npm install --frozen-lockfile
-
-# Copiar el resto del código fuente
+# Copy source code and build the application
 COPY . .
+RUN npm run build --configuration=production
 
-# Construir el proyecto Angular (se generará la carpeta dist)
-RUN npm run build --prod
+# Stage 2: Create a minimal image to serve the application
+FROM nginx:alpine-slim
 
-# Etapa 2: Servir con Nginx
-FROM nginx:alpine
+# Copy the built application
+COPY --from=builder /app/dist/usuarios-ui/browser /usr/share/nginx/html
 
-# Copiar los archivos generados en la etapa de construcción a la carpeta pública de nginx
-COPY --from=builder /app/dist/votantes-ui/browser /usr/share/nginx/html
+# Copy the nginx configuration
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copiar la configuración de nginx personalizada (si aplica)
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Expose port 80
+EXPOSE 80
 
-# Comando para reemplazar variables en env.template.js y arrancar nginx
+# Command to replace environment variables and start nginx
 CMD ["/bin/sh", "-c", "envsubst < /usr/share/nginx/html/env.template.js > /usr/share/nginx/html/env.js && exec nginx -g 'daemon off;'"]
+
 
