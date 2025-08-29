@@ -1,0 +1,30 @@
+# PARA ARMAR LOS CNTENEDORES CON IMAGEN DESDE DOCKER HUB
+services:
+  api:
+    image: 10.51.15.42:5000/usuarios-api:latest
+    container_name: usuarios-api
+    ports:
+      - 3001:3001
+    restart: always
+    networks:
+      - usuarios-net
+
+  app:
+    image: 10.51.15.42:5000/usuarios-ui:latest
+    container_name: usuarios-ui
+    ports:
+      - 8080:80
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - usuarios-net
+    environment:
+      #API_URL: 'http://10.51.15.41:3001/'
+      API_URL_USER: 'http://10.51.15.41:3001/'
+      REPORTS_URL: 'http://10.51.15.110:8123/api/reports/'
+
+networks:
+  usuarios-net:
+    driver: bridge
+    name: usuarios-net

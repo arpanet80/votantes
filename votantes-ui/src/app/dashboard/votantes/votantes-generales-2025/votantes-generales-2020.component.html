@@ -1,0 +1,435 @@
+<app-spinner></app-spinner>
+
+@if (formularioVisible) {
+
+    <!--begin::Formulario-->
+    <div  class="row g-5">
+
+        <div class="col-lg-2">
+        </div>
+
+        <div class="col-lg-6">
+                
+            <form [formGroup]="form" >
+
+                <!--begin::Datos personales-->
+                <div class="card card-flush py-4">
+
+                    <!--begin::Card header-->
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2>Datos de consulta</h2>
+                        </div>
+                    </div>
+                    <!--end::Card header-->
+
+                    <!--begin::Card body-->
+                    <div class="card-body pt-0">
+
+                        <!--begin::row-->
+                        <div class="d-flex flex-wrap gap-5">
+
+                            <!--begin::Input group cedula-->
+                            <div class="fv-row w-100 flex-md-root">
+                                <!--begin::Label-->
+                                <label class="required form-label">Cedula de Identidad</label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <input type="number" formControlName="ci" class="form-control mb-2"  />
+                                <control-messages [control]=" form.controls.ci"></control-messages>
+                                <!--end::Input-->
+                            </div>
+                            <!--end::Input group-->
+
+                            <!--begin::Input group complemento-->
+                            <div class="fv-row w-100 flex-md-root">
+                                <!--begin::Label-->
+                                <label class="form-label">Complemento</label>
+                                <!--end::Label-->
+
+                                <!--begin::Input-->
+                                <input type="text" formControlName="complemento"  class="form-control mb-2"  />
+                                <!--end::Input-->
+
+                                <!--begin::Description-->
+                                <div class="text-muted fs-7">Opcional.</div>
+                                <!--end::Description-->
+
+                            </div>
+                            <!--end::Input group-->
+
+                        </div>
+                        <!--end:row-->
+
+                        <!--begin::Buttons pane-->
+                        <div class="d-flex justify-content-end">
+                            <!--begin::Button-->
+                            <button 
+                                (click)="consultar()" 
+                                type="button"  class="btn btn-primary">
+                                Buscar
+                            </button>
+                            <!--end::Button-->
+                        </div>
+                        <!--end::Buttons pane-->
+                    </div>
+                    <!--end::Card header-->
+                </div>
+                <!--end::Pricing-->
+                
+            </form>
+
+        </div>
+
+    </div>
+    <!--begin::Formulario-->
+
+    @if (!encontradoPadron) {
+        <!--begin::Alert-->
+        <div class="alert  bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-10">
+            <h5 class="mb-1">No se encontro el ciuddano en el padron electoral!!!</h5>
+        </div>
+        <!--end::Alert-->
+    }
+
+<br>
+}
+
+@else {
+
+    <!--begin::Row-->
+    <div class="row gx-5 gx-xl-10">
+
+        <!--begin::Col-->
+        <div class="col-xxl-6 mb-5 mb-xl-10">
+
+            <!--begin::Chart widget 8-->
+            <div class="card card-flush h-xl-100">
+
+                <!--begin::Header-->
+                <div class="card-header pt-5">
+
+                    <!--begin::Title-->
+                    <h3 class="card-title align-items-start flex-column">            
+                        <span class="card-label fw-bold text-gray-900">Informacion del ciudadano/a</span>
+                        <!-- <span class="text-gray-500 mt-1 fw-semibold fs-6">Users from all channels</span> -->
+                    </h3>
+                    <!--end::Title-->
+
+                    <button (click)="nuevaConsultar()" type="button"  class="btn btn-primary">
+                        Nueva consulta
+                    </button>
+
+                </div>
+                <!--end::Header-->
+
+                <!--begin::Body-->
+                <div class="card-body pt-6">
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" [value]="nombreCompleto.toUpperCase() " readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Fecha de nacimientp</label>
+                        <input type="text" [value]="ciudadano()?.FechaNac | date:'dd/MM/yyyy'" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Documento de identidad</label>
+                        <input type="text" [value]="documentoIdentidad" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Pais</label>
+                        <input type="text" [value]="ciudadano()?.NomPais?.toUpperCase()" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Departamento</label>
+                        <input type="text" [value]="ciudadano()?.NomDep?.toUpperCase()" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Localidad</label>
+                        <input type="text" [value]="ciudadano()?.NomLoc?.toUpperCase()" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">Recinto de sufragio</label>
+                        <input type="text" [value]="ciudadano()?.NomReci?.toUpperCase()" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        <label class="form-label">CodigoMesa</label>
+                        <input type="text" [value]="ciudadano()?.CodigoMesa" readonly class="form-control mb-2"  />
+
+                    </div>
+                    <!--end::Input group-->
+
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Chart widget 8-->
+        </div>
+        <!--end::Col-->
+
+        <!--begin::Col-->
+        <div class="col-xxl-6 mb-5 mb-xl-10">
+
+            <!--begin::Chart widget 8-->
+            <div class="card card-flush h-xl-100">
+
+                <!--begin::Header-->
+                <div class="card-header pt-5">
+
+                    <!--begin::Title-->
+                    <h3 class="card-title align-items-start flex-column">            
+                        <span class="card-label fw-bold text-gray-900">Estados</span>
+                        <!-- <span class="text-gray-500 mt-1 fw-semibold fs-6">Users from all channels</span> -->
+                    </h3>
+                    <!--end::Title-->
+
+                </div>
+                <!--end::Header-->
+
+                <!--begin::Body-->
+                <div class="card-body pt-6">
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        @if (ciudadano() && ciudadano()?.EstadoRegistro != 'Habilitado') {
+                           
+                            <!--begin::Alert-->
+                            <div class="alert  bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-10">
+                                
+                                <i class="bi bi-x-circle-fill  fs-3x text-danger"></i>
+                                &nbsp;&nbsp;
+                                <div class="d-flex flex-column pe-0 pe-sm-10">
+
+                                    <h5 class="mb-1">CIUDADANO INHABILITADO</h5>
+                                    <h5 class="mb-1"> por: {{ ciudadano()?.EstadoRegistro }} </h5>
+
+                                </div>
+                            </div>
+                            <!--end::Alert-->
+                        }
+                        @else {
+
+                            @if (ciudadano() && ciudadano()?.Voto) {
+
+                                <!--begin::Alert-->
+                                <div class="alert  bg-light-success border border-success d-flex flex-column flex-sm-row p-5 mb-10">
+                                    
+                                    <i class="bi bi-check-circle-fill  fs-3x text-success"></i>
+                                    &nbsp;&nbsp;
+                                    <div class="d-flex flex-column pe-0 pe-sm-10">
+    
+                                        <h5 class="mb-1">Si emitio su voto</h5>
+    
+                                        <button  (click)="generaCertificado()" type="button"  class="btn btn-outline btn-outline-light-success btn-light-success">
+                                            Imprimir Certificado
+                                        </button>
+                                    
+                                    </div>
+                                </div>
+                                <!--end::Alert-->
+                            }
+                            @else {
+                                <!--begin::Alert-->
+                                <div class="alert  bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-10">
+                                    
+                                    <i class="bi bi-x-circle-fill  fs-3x text-danger"></i>
+                                    &nbsp;&nbsp;
+                                    <div class="d-flex flex-column pe-0 pe-sm-10">
+    
+                                        <h5 class="mb-1">No emitio su voto</h5>
+                                        &nbsp;&nbsp;
+                                        <span>
+                                            <button  (click)="generaCertificado()" type="button"  class="btn btn-outline btn-outline-light-danger btn-light-danger">
+                                                Imprimir Certificado
+                                            </button>
+    
+                                            &nbsp;&nbsp;
+    
+                                            <button (click)="muestraListaIndice()" type="button"  class="btn btn-outline btn-outline-light-warning btn-light-warning">
+                                                Ver Lista Indice
+                                            </button>
+                                         </span>
+                                    </div>
+                                </div>
+                                <!--end::Alert-->
+                                
+                            }
+                        }
+
+                        
+
+                    </div>
+                    <!--end::Input group-->
+
+                    <br>
+
+                    <!--begin::Input group -->
+                    <div class="fv-row w-100 flex-md-root">
+
+                        @if (ciudadano() && ciudadano()?.EstadoRegistro != 'Habilitado') {
+
+                        }
+                        @else {
+
+                            @if (ciudadano() && ciudadano()?.juradoEncontrado?.esjurado) {
+
+                                @if (ciudadano()?.juradoEncontrado?.asistente) {
+    
+                                    <!--begin::Alert-->
+                                    <div class="alert  bg-light-success border border-success d-flex flex-column flex-sm-row p-5 mb-10">
+                                        
+                                        <i class="bi bi-check-circle-fill  fs-3x text-success"></i>
+                                        &nbsp;&nbsp;
+                                        <div class="d-flex flex-column pe-0 pe-sm-10">
+    
+                                            <h5 class="mb-1">Es Jurado Electoral {{ ciudadano()?.juradoEncontrado?.tipoDesignacion }}</h5>
+    
+                                            <button  (click)="generaCertificadoJurado()" type="button"  class="btn btn-outline btn-outline-light-success btn-light-success">
+                                                Imprimir Certificado
+                                            </button>
+                                        
+                                        </div>
+                                    </div>
+                                    <!--end::Alert-->
+    
+                                }@else {
+    
+                                    <!--begin::Alert-->
+                                    <div class="alert  bg-light-danger border border-danger d-flex flex-column flex-sm-row p-5 mb-10">
+                                        
+                                        <i class="bi bi-check-circle-fill  fs-3x text-danger"></i>
+                                        &nbsp;&nbsp;
+                                        <div class="d-flex flex-column pe-0 pe-sm-10">
+    
+                                            <h5 class="mb-1">Es Jurado Electoral {{ ciudadano()?.juradoEncontrado?.tipoDesignacion }}</h5>
+                                            <br>
+                                            JURADO NO ASISTENTE
+    
+                                            <button  (click)="muestraActaElectoral()" type="button"  class="btn btn-outline btn-outline-light-danger btn-light-danger">
+                                                Ver Acta Electoral
+                                            </button>
+                                        
+                                        </div>
+                                    </div>
+                                    <!--end::Alert-->
+                                    
+                                }
+                                
+                            }
+                            @else {
+                                <!--begin::Alert-->
+                                <div class="alert  bg-light-warning border border-warning d-flex flex-column flex-sm-row p-5 mb-10">
+                                        
+                                    <i class="bi bi-check-circle-fill  fs-3x text-warning"></i>
+                                    &nbsp;&nbsp;
+                                    <div class="d-flex flex-column pe-0 pe-sm-10">
+    
+                                        <h5 class="mb-1">NO fue designado como Jurado Electoral</h5>
+    
+                                    </div>
+                                </div>
+                                <!--end::Alert-->
+    
+                            }
+                            
+                        }
+
+                        
+
+                    </div>
+                    <!--end::Input group-->
+
+                </div>
+                <!--end::Body-->
+
+            </div>
+            <!--end::Chart widget 8-->
+        </div>
+        <!--end::Col-->
+    </div>
+    <!--end::Row-->
+}
+
+<br><br><br><br><br><br><br><br><br>
+<!-- 
+<div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
+
+        <div class="card card-flush py-4">
+
+            <div class="card-header">
+                <div class="card-title">
+                    <h2>Datos personales</h2>
+                </div>
+            </div>
+
+            <div class="card-body pt-0">
+
+                <div class="d-flex flex-wrap gap-5">
+
+                    <div class="fv-row w-100 flex-md-root">
+                        <label class="required form-label">Cedula de Identidad</label>
+
+                        <input type="number" formControlName="ci" class="form-control mb-2"  />
+                        <control-messages [control]=" form.controls.ci"></control-messages>
+                    </div>
+
+                    <div class="fv-row w-100 flex-md-root">
+                        <label class="form-label">Complemento</label>
+
+                        <input type="text" formControlName="complemento"  class="form-control mb-2"  />
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button 
+                (click)="consultar()" 
+                type="button"  class="btn btn-primary">
+                Consultar
+            </button>
+        </div>
+</div> -->
+
