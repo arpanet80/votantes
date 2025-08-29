@@ -1,0 +1,22 @@
+///////////////////////////////////////////////////
+INSTALAR NGINX CONECTADO A SMB 
+//////////////////////////////////////////////////
+
+genera un script para debian que ejecute de manera automatica el montaje de la carpeta remota verificando preciamente si ya se encuentra montada o no, tengo el siguiente codgo que funciona de forma manual:
+
+apt-get install cifs-utils
+mkdir -p /mnt/judiciales2024
+mount -t cifs //10.51.15.89/judiciales2024 /mnt/judiciales2024 -o username=dante,password=Dante2k21
+
+al final del archivo  /etc/fstab agrega: 
+	//10.51.15.89/judiciales2024 /mnt/judiciales2024 cifs username=dante,password=Dante2k21 0 0
+
+para darle persistencia al montaje
+
+docker run --name votantes-files -v /mnt/judiciales2024:/usr/share/nginx/html -p 8123:80 -d nginx
+
+http://10.51.15.41:8123/actas/500001.jpg
+
+
+
+

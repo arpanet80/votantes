@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+//// Posible cualquier cantidad de bases ql server y postgres ///////////////
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             entities: [__dirname + '/../postgresjud2024entities/**/*.entity{.ts,.js}'],
             synchronize: false, // Si pone en true ELIMINA TODO y realiza migraciones automáticamente para que su base de datos sea idéntica a su modelado
           }),
+          
         }),
       ],
 })

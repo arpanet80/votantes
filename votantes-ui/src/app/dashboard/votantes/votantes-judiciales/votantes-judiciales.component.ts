@@ -87,6 +87,7 @@ export class VotantesJudicialesComponent {
     }
 
     /// Calcula la fecha actual en texto //////////////////////
+
     const fechaActual = new Date();
 
     const formatoFecha = new Intl.DateTimeFormat('es-ES', {   // Configurar el formateador en español
@@ -96,9 +97,11 @@ export class VotantesJudicialesComponent {
       day: 'numeric',  // Día del mes
     });
     let fechaTexto = formatoFecha.format(fechaActual);
+    
     fechaTexto = fechaTexto.replace(',', '');
     //////////////////////////////////////////////////////////////////
 
+    //// La fecha que se recibe es en formato UTC por o que se configura en la vista ///////////////
     this.certificadoVotante = {
       votoLiteral: siNo,
       nombrecompleto: this.ciudadano()?.nombres + ' ' + this.ciudadano()?.appat + ' ' + this.ciudadano()?.apmat + ' ' + this.ciudadano()?.apesp,
