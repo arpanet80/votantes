@@ -14,7 +14,7 @@ RUN npm run build --configuration=production
 FROM nginx:alpine-slim
 
 # Copy the built application
-COPY --from=builder /app/dist/usuarios-ui/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/votantes-ui/browser /usr/share/nginx/html
 
 # Copy the nginx configuration
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
