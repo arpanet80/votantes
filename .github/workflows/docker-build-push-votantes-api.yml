@@ -1,11 +1,11 @@
-name: Docker Build and Push usuarios-api
+name: Docker Build and Push votantes-api
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'usuarios-api/**'  # Solo se activará si hay cambios en usuarios-api
+      - 'votantes-api/**'  # Solo se activará si hay cambios en votantes-api
 
 jobs:
   build-and-push:
@@ -25,12 +25,12 @@ jobs:
           registry: 10.51.15.42:5000
 
       # 3. Construir la imagen Docker optimizada
-      - name: Build Docker image for usuarios-api
+      - name: Build Docker image for votantes-api
         run: |
-          cd usuarios-api
-          docker build -t 10.51.15.42:5000/usuarios-api:latest -f Dockerfile .
+          cd votantes-api
+          docker build -t 10.51.15.42:5000/votantes-api:latest -f Dockerfile .
 
       # 4. Subir la imagen Docker al Registry privado
       - name: Push Docker image to Registry
         run: |
-          docker push 10.51.15.42:5000/usuarios-api:latest
+          docker push 10.51.15.42:5000/votantes-api:latest

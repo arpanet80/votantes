@@ -1,11 +1,11 @@
-name: Docker Build and Push usuarios-ui
+name: Docker Build and Push votantes-ui
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'usuarios-ui/**'  # Solo se activará si hay cambios en usuarios-ui
+      - 'votantes-ui/**'  # Solo se activará si hay cambios en votantes-ui
 
 jobs:
   build-and-push:
@@ -24,13 +24,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: 10.51.15.42:5000
 
-      # 3. Construir la imagen Docker optimizada para usuarios-ui
-      - name: Build Docker image for usuarios-ui
+      # 3. Construir la imagen Docker optimizada para votantes-ui
+      - name: Build Docker image for votantes-ui
         run: |
-          cd usuarios-ui
-          docker build -t 10.51.15.42:5000/usuarios-ui:latest -f Dockerfile .
+          cd votantes-ui
+          docker build -t 10.51.15.42:5000/votantes-ui:latest -f Dockerfile .
 
       # 4. Subir la imagen Docker al Registry privado
       - name: Push Docker image to Registry
         run: |
-          docker push 10.51.15.42:5000/usuarios-ui:latest
+          docker push 10.51.15.42:5000/votantes-ui:latest
