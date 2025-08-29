@@ -140,7 +140,7 @@
                     <div class="fv-row w-100 flex-md-root">
 
                         <label class="form-label">Fecha de nacimientp</label>
-                        <input type="text" [value]="ciudadano()?.FechaNac | date:'dd/MM/yyyy'" readonly class="form-control mb-2"  />
+                        <input type="text" [value]="ciudadano()?.FechaNac | date:'dd/MM/yyyy':'UTC'"  readonly class="form-control mb-2"  />
 
                     </div>
                     <!--end::Input group-->
