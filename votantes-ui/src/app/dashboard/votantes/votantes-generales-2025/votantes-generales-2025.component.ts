@@ -21,6 +21,7 @@ export class VotantesGenerales2025Component {
   private fbuilder = inject( FormBuilder );
 
   private readonly filesUrl: string = environment.filesUrl;
+  private readonly carpetaeleccion: string = 'generales2025/';
   
   public ciudadano = signal<Ciudadano | null>(null)
   public nombreCompleto =';'
@@ -139,7 +140,7 @@ export class VotantesGenerales2025Component {
     const mesa = this.ciudadano()?.CodigoMesa; // '500001.pdf'
     const pagina = this.ciudadano()?.numeropagina //2;
 
-    var pdfUrl = this.filesUrl + 'listas/' + mesa + '.pdf#page=' + pagina;
+    var pdfUrl = this.filesUrl + this.carpetaeleccion + 'listas/' + mesa + '.pdf#page=' + pagina;
     window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva pestaña
   }
 
@@ -156,7 +157,7 @@ export class VotantesGenerales2025Component {
     // const urlListas = 'http://10.51.15.110:8122/';
     const mesa = this.ciudadano()?.CodigoMesa; // '500001.pdf'
 
-    var pdfUrl = this.filesUrl + 'actas/' + mesa + '.jpg';
+    var pdfUrl = this.filesUrl + this.carpetaeleccion + 'actas/' + mesa + '.jpg';
     window.open(pdfUrl, '_blank');
   }
   
