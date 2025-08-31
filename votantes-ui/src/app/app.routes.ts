@@ -6,7 +6,7 @@ import { notLoguedGuard } from './core/guards/not-logued.guard';
 import { loguedGuard } from './core/guards/logued.guard';
 import { VotantesJudicialesComponent } from './dashboard/votantes/votantes-judiciales/votantes-judiciales.component';
 import { VotantesGenerales2025Component } from './dashboard/votantes/votantes-generales-2025/votantes-generales-2025.component';
-import { VotantesGenerales2025SegundaComponent } from './dashboard/votantes/votantes-generales2025segunda/votantes-subnacionales2021.component';
+import { VotantesGenerales2025SegundaComponent } from './dashboard/votantes/votantes-generales2025segunda/votantes-generales2025segunda.component';
 
 export const routes: Routes = [
   {

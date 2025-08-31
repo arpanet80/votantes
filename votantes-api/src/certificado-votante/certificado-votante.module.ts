@@ -5,13 +5,22 @@ import { CiudadanosModule } from 'src/sqljud2024entities/ciudadanos/ciudadanos.m
 import { NoVotanteModule } from 'src/postgresjud2024entities/no-votante/no-votante.module';
 import { GeografiaDesconectadoModule } from 'src/postgresjud2024entities/geografia-desconectado/geografia-desconectado.module';
 import { JuradoSorteadoModule } from 'src/postgresjud2024entities/jurado-sorteado/jurado-sorteado.module';
+import { CiudadanosGeneralesModule } from 'src/sqlgen2025entities/ciudadanos/ciudadanos.module';
+import { NoVotanteGeneralesModule } from 'src/postgresgen2025entities/no-votante/no-votante.module';
+import { GeografiaDesconectadoGeneralesModule } from 'src/postgresgen2025entities/geografia-desconectado/geografia-desconectado.module';
+import { JuradoSorteadoGeneralesModule } from 'src/postgresgen2025entities/jurado-sorteado/jurado-sorteado.module';
 
 @Module({
   imports: [
     CiudadanosModule,
     NoVotanteModule,
     GeografiaDesconectadoModule, 
-    JuradoSorteadoModule
+    JuradoSorteadoModule,
+
+    CiudadanosGeneralesModule,
+    NoVotanteGeneralesModule,
+    GeografiaDesconectadoGeneralesModule, 
+    JuradoSorteadoGeneralesModule
   ],
   controllers: [CertificadoVotanteController],
   providers: [CertificadoVotanteService],

@@ -12,8 +12,8 @@ import { SpinnerComponent } from '../../../core/components/spinner/spinner.compo
 @Component({
   selector: 'app-votantes-subnacionales2021',
   imports: [ReactiveFormsModule, ControlMessagesComponent, SpinnerComponent, DatePipe],
-  templateUrl: './votantes-subnacionales2021.component.html',
-  styleUrl: './votantes-subnacionales2021.component.css'
+  templateUrl: './votantes-generales2025segunda.component.html',
+  styleUrl: './votantes-generales2025segunda.component.css'
 })
 export class VotantesGenerales2025SegundaComponent {
     private apiService = inject ( ApiService );

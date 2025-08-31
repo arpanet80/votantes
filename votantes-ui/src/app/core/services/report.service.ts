@@ -34,9 +34,39 @@ export class ReportService {
       , {observe:'response',responseType:'blob'});
   }
 
+  GenerateGeneralesPDF(votoLiteral:string, nombrecompleto: string, documento: string,
+    mesa: string, recinto: string, pais: string, departamento: string,
+    localidad: string, fecha: string
+  ){
+    const reportName  = `Votantes/certificado-generales.trdp`;
+
+    return this.http.get(`${this.url}${reportName}
+        &parameters[votoLiteral]=${votoLiteral}
+        &parameters[nombrecompleto]=${nombrecompleto}
+        &parameters[documento]=${documento}
+        &parameters[mesa]=${mesa}
+        &parameters[recinto]=${recinto}
+        &parameters[pais]=${pais}
+        &parameters[departamento]=${departamento}
+        &parameters[localidad]=${localidad}
+        &parameters[fecha]=${fecha}
+      `
+      , {observe:'response',responseType:'blob'});
+  }
+
   GeneraCertificadoJuradoPDF(nombre:string){
     
     const reportName  = `Votantes/certif-jurado.trdp`;
+
+    return this.http.get(`${this.url}${reportName}
+        &parameters[nombre]=${nombre}       
+      `
+      , {observe:'response',responseType:'blob'});
+  }
+
+  GeneraCertificadoJuradoGeneralesPDF(nombre:string){
+    
+    const reportName  = `Votantes/certif-jurado-generales.trdp`;
 
     return this.http.get(`${this.url}${reportName}
         &parameters[nombre]=${nombre}       

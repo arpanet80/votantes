@@ -5,8 +5,28 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
-      // Conecion Ms SQL Server Judiciales 2024 ///////////
-        TypeOrmModule.forRootAsync({
+      // Conexion Ms SQL Server Generales 2025 ///////////
+      TypeOrmModule.forRootAsync({
+          name: 'mssqlgen2025',
+          useFactory: () => ({
+            type: 'mssql',
+            host: `10.51.15.155\\EG2025`,
+            port: 1433,
+            username: `usrapp_desconectado`,
+            password: `D35c0n3ct4d0$3g2025*`,
+            database: `ImpedimentoDesconectado`,
+
+            entities: [__dirname + '/../sqlgen2025entities/**/*.entity{.ts,.js}'],
+            synchronize: false, 
+            
+            options: {
+              encrypt: false, 
+              trustServerCertificate: true, 
+            },
+          }),
+        }),
+      // Conexion Ms SQL Server Judiciales 2024 ///////////
+      TypeOrmModule.forRootAsync({
           name: 'mssqljud2024',
           useFactory: () => ({
             type: 'mssql',
@@ -25,7 +45,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             },
           }),
         }),
-        //// Conecio Postgres Judiciales 2024 /////////////
+
+        //// Conexion Postgres Generales 2025 /////////////
+        TypeOrmModule.forRootAsync({
+          name: 'postgresgen2025',  
+          useFactory: () => ({
+            type: 'postgres',
+            url: `postgresql://postgres:Pa$$Base2022@10.51.15.101:5432/EleccionesEG2025?options=-c%20search_path=ted`,
+            // url: `postgresql://${configService.get('POSTGRES_USER')}:${configService.get('POSTGRES_PASSWORD')}@${configService.get('POSTGRES_HOST')}:${configService.get('POSTGRES_PORT')}/${configService.get('POSTGRES_DB')}?options=-c%20search_path=${configService.get('POSTGRES_PATH')}`,
+            entities: [__dirname + '/../postgresgen2025entities/**/*.entity{.ts,.js}'],
+            synchronize: false, // Si pone en true ELIMINA TODO y realiza migraciones automáticamente para que su base de datos sea idéntica a su modelado
+          }),          
+        }),
+        //// Conexion Postgres Judiciales 2024 /////////////
         TypeOrmModule.forRootAsync({
           name: 'postgresjud2024',  
           useFactory: () => ({
@@ -34,8 +66,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             // url: `postgresql://${configService.get('POSTGRES_USER')}:${configService.get('POSTGRES_PASSWORD')}@${configService.get('POSTGRES_HOST')}:${configService.get('POSTGRES_PORT')}/${configService.get('POSTGRES_DB')}?options=-c%20search_path=${configService.get('POSTGRES_PATH')}`,
             entities: [__dirname + '/../postgresjud2024entities/**/*.entity{.ts,.js}'],
             synchronize: false, // Si pone en true ELIMINA TODO y realiza migraciones automáticamente para que su base de datos sea idéntica a su modelado
-          }),
-          
+          }),          
         }),
       ],
 })

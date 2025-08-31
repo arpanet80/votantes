@@ -38,5 +38,19 @@ export class ApiService {
     );
   }
 
+  getCiudadanoGenerales(ci: string): Observable<Ciudadano> {
+    return this.http.get(`${this.url}certificado-votante/generales/${ci}`).pipe(
+      map((data: any) => data),
+      catchError(error => {
+        if (error.status === 404) {
+          // Aquí manejas el error 404 de manera específica
+          return throwError('NoPadron');
+        }
+        // Puedes manejar otros errores aquí o re-lanzarlos
+        return throwError(error);
+      })
+    );
+  }
+
 
 }

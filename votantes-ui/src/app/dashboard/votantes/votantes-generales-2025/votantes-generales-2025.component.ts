@@ -12,8 +12,8 @@ import { ReportService } from '../../../core/services/report.service';
 @Component({
   selector: 'app-votantes-generales-2020',
   imports: [ReactiveFormsModule, ControlMessagesComponent, SpinnerComponent, DatePipe],
-  templateUrl: './votantes-generales-2020.component.html',
-  styleUrl: './votantes-generales-2020.component.css'
+  templateUrl: './votantes-generales-2025.component.html',
+  styleUrl: './votantes-generales-2025.component.css'
 })
 export class VotantesGenerales2025Component {
     private apiService = inject ( ApiService );
@@ -48,7 +48,7 @@ export class VotantesGenerales2025Component {
 
         this.formularioVisible = false;
 
-        this.apiService.getCiudadanoJudiciales(String(this.form.value.ci) ).subscribe({
+        this.apiService.getCiudadanoGenerales(String(this.form.value.ci) ).subscribe({
           next: ((res:Ciudadano) => {
 
             this.ciudadano.set(res);
@@ -111,7 +111,7 @@ export class VotantesGenerales2025Component {
       fecha: 'Potosi,' + fechaTexto
     };
 
-    this.reportService.GeneratePDF(
+    this.reportService.GenerateGeneralesPDF(
       siNo.trim(),
       this.ciudadano()?.nombres.trim() + ' ' + this.ciudadano()?.appat.trim() + ' ' + this.ciudadano()?.apmat.trim() + ' ' + this.ciudadano()?.apesp.trim(),
       String( this.ciudadano()?.DocumentoIdentidad ),
@@ -145,7 +145,7 @@ export class VotantesGenerales2025Component {
   }
 
   generaCertificadoJurado() {
-    this.reportService.GeneraCertificadoJuradoPDF(this.ciudadano()?.nombres.trim() + ' ' + this.ciudadano()?.appat.trim() + ' ' + this.ciudadano()?.apmat.trim() + ' ' + this.ciudadano()?.apesp.trim()
+    this.reportService.GeneraCertificadoJuradoGeneralesPDF(this.ciudadano()?.nombres.trim() + ' ' + this.ciudadano()?.appat.trim() + ' ' + this.ciudadano()?.apmat.trim() + ' ' + this.ciudadano()?.apesp.trim()
       ).subscribe(res => {
         let blob: Blob = res.body as Blob;
         let url = window.URL.createObjectURL(blob);
