@@ -20,7 +20,7 @@ export class VotantesGenerales2025Component {
   private reportService = inject ( ReportService );
   private fbuilder = inject( FormBuilder );
 
-  private readonly filesUrl: string = environment.filesUrl + 'judiciales2024/';
+  private readonly filesUrl: string = environment.filesUrl;
   private readonly carpetaeleccion: string = 'generales2025/';
   
   public ciudadano = signal<Ciudadano | null>(null)

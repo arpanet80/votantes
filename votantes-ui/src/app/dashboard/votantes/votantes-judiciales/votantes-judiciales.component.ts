@@ -21,7 +21,7 @@ export class VotantesJudicialesComponent {
   private reportService = inject ( ReportService );
   private fbuilder = inject( FormBuilder );
 
-  private readonly filesUrl: string = environment.filesUrl + 'judiciales2024/';
+  private readonly filesUrl: string = environment.filesUrl;
   private readonly carpetaeleccion: string = 'judiciales2024/'
   
   public ciudadano = signal<Ciudadano | null>(null)
@@ -145,7 +145,6 @@ export class VotantesJudicialesComponent {
     const pagina = this.ciudadano()?.numeropagina //2;
 
     var pdfUrl = this.filesUrl + this.carpetaeleccion + 'listas/' + mesa + '.pdf#page=' + pagina;
-    console.log(pdfUrl);
     window.open(pdfUrl, '_blank'); // Abre el PDF en una nueva pestaña
   }
 
