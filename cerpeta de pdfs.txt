@@ -2,11 +2,12 @@
 INSTALAR NGINX CONECTADO A SMB 
 //////////////////////////////////////////////////
 
-genera un script para debian que ejecute de manera automatica el montaje de la carpeta remota verificando preciamente si ya se encuentra montada o no, tengo el siguiente codgo que funciona de forma manual:
+//Solo se apuntara al directorio donde estan los archivos en el NAS
 
 apt-get install cifs-utils
-mkdir -p /mnt/judiciales2024
-mount -t cifs //10.51.15.89/judiciales2024 /mnt/judiciales2024 -o username=dante,password=Dante2k21
+mkdir -p /mnt/docselectoral
+mount -t cifs //10.51.15.89/judiciales2024 /mnt/docselectoral -o username=dante,password=Dante2k21
+// Esta judiciales2024 porque no he podido cambiar en el NAS el  nombre de la carpeta raiz
 
 al final del archivo  /etc/fstab agrega: 
 	//10.51.15.89/judiciales2024 /mnt/judiciales2024 cifs username=dante,password=Dante2k21 0 0
