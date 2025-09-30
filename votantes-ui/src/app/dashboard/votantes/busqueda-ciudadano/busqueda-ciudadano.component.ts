@@ -60,7 +60,6 @@ export class BusquedaCiudadanoomponent {
   }
 
   createForm(): FormGroup {
-
     return this.fb.group({
       nombres: [''],
       paterno: [''],
@@ -69,7 +68,6 @@ export class BusquedaCiudadanoomponent {
       complemento: ['', [Validators.maxLength(5)]],
       fechaNac: ['', [this.dateFormatValidator]]
     }, { validators: this.atLeastTwoFieldsValidator() });
-    
   }
 
   onSubmit(): void {
