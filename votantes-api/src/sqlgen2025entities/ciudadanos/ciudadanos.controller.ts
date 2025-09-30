@@ -33,6 +33,7 @@ export class CiudadanosController {
       });
     }
     
+    
     if (result.resultType === 'NO_RESULTS') {
       throw new NotFoundException({
         message: 'No se encontraron ciudadanos con los criterios de búsqueda',

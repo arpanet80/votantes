@@ -25,3 +25,4 @@ import { SqlGen2025Module } from './sqlgen2025entities/sqlgen2025.module';
   providers: [AppService],
 })
 export class AppModule {}
+

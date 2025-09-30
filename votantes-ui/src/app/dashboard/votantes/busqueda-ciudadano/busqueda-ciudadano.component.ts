@@ -1,13 +1,7 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
-import { environment } from '../../../../environments/environment';
-import { ControlMessagesComponent } from '../../../core/components/control-messages.component';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { CertificadoVotante } from '../../../core/models/certificado-voto.model';
-import { Ciudadano } from '../../../core/models/ciudadano.model';
 import { ApiService } from '../../../core/services/api.service';
-import { ReportService } from '../../../core/services/report.service';
 import { CiudadanoGenerales } from '../../../core/models/ciudadano-generales.model';
 
 @Component({
@@ -110,7 +104,7 @@ export class BusquedaCiudadanoomponent {
             this.errorMensaje = error.message || 'Error al realizar la búsqueda. Intente nuevamente.';
           }
           
-          // console.error('Error en la búsqueda:', error);
+          console.error('Error en la búsqueda:', error);
         }
       });
     } else {
