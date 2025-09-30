@@ -1,6 +1,6 @@
 import { JuradoEncontrado } from "./jurado-encontrado.model";
 
-export interface Ciudadano {
+export interface CiudadanoGenerales {
     id: number;
     Ciudadano: number;
     MesaCiudadano: number;
@@ -32,9 +32,9 @@ export interface Ciudadano {
     NomReci: string;
     NomZona: string;
     CodigoMesa: string;
-    Voto: boolean;
+    /*Voto: boolean;
     numerocorrelativo: string;
     numeropagina: string;
     meesaRecinto: string;
-    juradoEncontrado: JuradoEncontrado;
+    juradoEncontrado?: JuradoEncontrado*/
 }

@@ -7,6 +7,7 @@ import { loguedGuard } from './core/guards/logued.guard';
 import { VotantesJudicialesComponent } from './dashboard/votantes/votantes-judiciales/votantes-judiciales.component';
 import { VotantesGenerales2025Component } from './dashboard/votantes/votantes-generales-2025/votantes-generales-2025.component';
 import { VotantesGenerales2025SegundaComponent } from './dashboard/votantes/votantes-generales2025segunda/votantes-generales2025segunda.component';
+import { BusquedaCiudadanoomponent } from './dashboard/votantes/busqueda-ciudadano/busqueda-ciudadano.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,11 @@ export const routes: Routes = [
     path: 'votantes/generales2025segunda',
     canActivate: [ loguedGuard ],
     component: VotantesGenerales2025SegundaComponent , data: {titulo: 'Elecciones Generales 2025 Segunda Vuelta', subtitulo: 'Consulta ciudadana', rutaBreadcrumbs:'Segunda Vuelta'} ,
+  },
+  {
+    path: 'votantes/busquedaciudadanos',
+    canActivate: [ loguedGuard ],
+    component: BusquedaCiudadanoomponent , data: {titulo: 'Busqueda de ciudadanos', subtitulo: 'Consulta ciudadana', rutaBreadcrumbs:'Busqueda ciudadana'} ,
   },
 
   {

@@ -9,32 +9,50 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       TypeOrmModule.forRootAsync({
           name: 'mssqlgen2025',
           useFactory: () => ({
-            type: 'mssql',
+            /*type: 'mssql',
             host: `10.51.15.155\\EG2025`,
             port: 1433,
             username: `usrapp_desconectado`,
             password: `D35c0n3ct4d0$3g2025*`,
-            database: `ImpedimentoDesconectado`,
+            database: `ImpedimentoDesconectado`,*/
+            type: 'mssql',
+            host: `10.51.15.156`,
+            port: 1433,
+            username: `appuser`,
+            password: `4ppUs3r!2k25$Dante%%`,
+            database: `ConsultaEG2025`,
 
             entities: [__dirname + '/../sqlgen2025entities/**/*.entity{.ts,.js}'],
             synchronize: false, 
-            
             options: {
-              encrypt: false, 
-              trustServerCertificate: true, 
+              encrypt: false, // Para desarrollo local
+              trustServerCertificate: true, // Para desarrollo local
+              requestTimeout: 60000, // Aumenta el timeout a 60 segundos
+              connectTimeout: 30000, // Aumenta el timeout de conexión
             },
+            extra: {
+              connectionTimeout: 30000,
+              requestTimeout: 60000,
+            }
           }),
         }),
       // Conexion Ms SQL Server Judiciales 2024 ///////////
       TypeOrmModule.forRootAsync({
           name: 'mssqljud2024',
           useFactory: () => ({
-            type: 'mssql',
+            /*type: 'mssql',
             host: `10.51.15.164\\EJ2024_LITE`,
             port: 1433,
             username: `usr_app_impedimentos_desc`,
             password: `Usr_Imp3dim3nt0s#24`,
             database: `ImpedimentoDesconectado`,
+            */
+            type: 'mssql',
+            host: `10.51.15.156`,
+            port: 1433,
+            username: `appuser`,
+            password: `4ppUs3r!2k25$Dante%%`,
+            database: `ConsultaEJ2024`,
 
             entities: [__dirname + '/../sqljud2024entities/**/*.entity{.ts,.js}'],
             synchronize: false, 

@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UsePipes, ValidationPipe, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CiudadanosGeneralesService } from './ciudadanos.service';
+import { BuscarCiudadanosDto } from './dto/buscar-ciudadanos.dto';
 
 @Controller('ciudadanos-generales2025')
 export class CiudadanosController {
@@ -15,6 +16,41 @@ export class CiudadanosController {
     return this.ciudadanosService.getCiudadanosFromStoredProc(ci, complemento);
   }
 
+   // Nueva ruta POST para búsqueda con múltiples parámetros
+  @Post('buscar')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async getCiudadanosByParams(@Body() buscarDto: BuscarCiudadanosDto) {
+    const result = await this.ciudadanosService.getCiudadanosByParams(buscarDto);
+    
+    // console.log('Resultado del servicio:', result);
+    
+    if (result.resultType === 'TOO_MANY_RESULTS') {
+      throw new BadRequestException({
+        message: result.message,
+        total: result.total,
+        criteria: buscarDto,
+        suggestion: 'Por favor, agregue más criterios de búsqueda para refinar los resultados.'
+      });
+    }
+    
+    if (result.resultType === 'NO_RESULTS') {
+      throw new NotFoundException({
+        message: 'No se encontraron ciudadanos con los criterios de búsqueda',
+        criteria: buscarDto,
+        suggestion: 'Intente con diferentes parámetros de búsqueda'
+      });
+    }
+    
+    return result;
+  }
+
+  /*@Post('buscar')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async getCiudadanosByParams(@Body() buscarDto: BuscarCiudadanosDto) {
+    return this.ciudadanosService.getCiudadanosByParams(buscarDto);
+  }*/
+
+  
   /*
   @Post()
   create(@Body() createCiudadanoDto: CreateCiudadanoDto) {

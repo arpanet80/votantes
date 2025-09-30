@@ -23,6 +23,12 @@ export const menuDeOpcionesDos = {
         url: "/votantes/generales2025segunda",
         roles: [Role.Admin, Role.Usuario],
     },
+    busquedaciudadano: {
+        titulo: 'Busqueda por criterios',
+        icono:  "bi bi-search",
+        url: "/votantes/busquedaciudadanos",
+        roles: [Role.Admin],
+    },
 
 
     /*

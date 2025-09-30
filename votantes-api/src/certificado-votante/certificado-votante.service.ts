@@ -33,7 +33,7 @@ export class CertificadoVotanteService {
     const jurado = await this.juradoJudicialesService.buscaJurado(ci);
     
     const ciudadano = await this.ciudadanoJudicialesService.getCiudadanosFromStoredProc(ci, complemento);
-    console.log(ciudadano);
+    // console.log(ciudadano);
     ciudadano.juradoEncontrado = jurado;
     
     if (ciudadano) {
@@ -75,10 +75,13 @@ export class CertificadoVotanteService {
  
   
   async obtenerCertificadoVotanteGenerales(ci: number, complemento?: string): Promise<CiudadanoGenerales> {
-
+    
     const jurado = await this.juradoGeneralesService.buscaJurado(ci);
 
     const ciudadano = await this.ciudadanoGeneralesService.getCiudadanosFromStoredProc(ci, complemento);
+
+      console.log("=====>" + ciudadano);
+
     
     ciudadano.juradoEncontrado = jurado;
         
@@ -86,7 +89,7 @@ export class CertificadoVotanteService {
       // console.log("Si en padron");
       const geografia = await this.geoGeneralesService.findOne(ciudadano.MesaCiudadano);
 
-      console.log(geografia);
+      // console.log(geografia);
 
       ciudadano.meesaRecinto = geografia.NumeroMesa;
 

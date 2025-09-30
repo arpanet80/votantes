@@ -53,7 +53,7 @@ export class VotantesJudicialesComponent {
             
             
             this.ciudadano.set(res);
-            this.nombreCompleto = res.nombres + ' ' + res.appat + ' ' + res.apmat + ' ' + res.apesp;
+            this.nombreCompleto = res.Nombres + ' ' + res.ApPat + ' ' + res.ApMat + ' ' + res.ApEsp;
             this.documentoIdentidad = res.DocumentoIdentidad + ' ' + res.ComplementoDocumentoIdentidad;
             
           }),
@@ -105,7 +105,7 @@ export class VotantesJudicialesComponent {
     //// La fecha que se recibe es en formato UTC por o que se configura en la vista ///////////////
     this.certificadoVotante = {
       votoLiteral: siNo,
-      nombrecompleto: this.ciudadano()?.nombres + ' ' + this.ciudadano()?.appat + ' ' + this.ciudadano()?.apmat + ' ' + this.ciudadano()?.apesp,
+      nombrecompleto: this.ciudadano()?.Nombres + ' ' + this.ciudadano()?.ApPat + ' ' + this.ciudadano()?.ApMat + ' ' + this.ciudadano()?.ApEsp,
       documento: String( this.ciudadano()?.DocumentoIdentidad ),
       mesa: String(this.ciudadano()?.meesaRecinto),
       recinto: String(this.ciudadano()?.NomReci),
@@ -117,7 +117,7 @@ export class VotantesJudicialesComponent {
 
     this.reportService.GeneratePDF(
       siNo.trim(),
-      this.ciudadano()?.nombres.trim() + ' ' + this.ciudadano()?.appat.trim() + ' ' + this.ciudadano()?.apmat.trim() + ' ' + this.ciudadano()?.apesp.trim(),
+      this.ciudadano()?.Nombres.trim() + ' ' + this.ciudadano()?.ApPat.trim() + ' ' + this.ciudadano()?.ApMat.trim() + ' ' + this.ciudadano()?.ApEsp.trim(),
       String( this.ciudadano()?.DocumentoIdentidad ),
       String(this.ciudadano()?.meesaRecinto),
       String(this.ciudadano()?.NomReci),
@@ -149,7 +149,7 @@ export class VotantesJudicialesComponent {
   }
 
   generaCertificadoJurado() {
-    this.reportService.GeneraCertificadoJuradoPDF(this.ciudadano()?.nombres.trim() + ' ' + this.ciudadano()?.appat.trim() + ' ' + this.ciudadano()?.apmat.trim() + ' ' + this.ciudadano()?.apesp.trim()
+    this.reportService.GeneraCertificadoJuradoPDF(this.ciudadano()?.Nombres.trim() + ' ' + this.ciudadano()?.ApPat.trim() + ' ' + this.ciudadano()?.ApMat.trim() + ' ' + this.ciudadano()?.ApEsp.trim()
       ).subscribe(res => {
         let blob: Blob = res.body as Blob;
         let url = window.URL.createObjectURL(blob);

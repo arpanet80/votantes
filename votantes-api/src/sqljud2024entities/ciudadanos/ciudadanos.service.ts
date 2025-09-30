@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class CiudadanosService {
   // private readonly logger = new Logger(CiudadanoService.name);
-  private readonly clave = '0x0200000099D665269A70F3159848E3C6FFAE3569D18CD9EC445582CAC9290B20BBE2CDF0A3B377001557F913D7510B9B27DE5754';;
+  // private readonly clave = '0x0200000099D665269A70F3159848E3C6FFAE3569D18CD9EC445582CAC9290B20BBE2CDF0A3B377001557F913D7510B9B27DE5754';;
 
   constructor(
     @InjectRepository(Ciudadano, 'mssqljud2024') 
@@ -87,74 +87,33 @@ export class CiudadanosService {
 
   try {
 
-    //// paBuscaCiudadano Busca al ciudadano por nombre appelido carnet etc. ////
-    var query = `EXEC [dbo].[paBuscaCiudadano] 
-      @Documento = ${ci},
-      @pwd = '${this.clave}'
-    `;
-    //@pwd = '0x0200000099D665269A70F3159848E3C6FFAE3569D18CD9EC445582CAC9290B20BBE2CDF0A3B377001557F913D7510B9B27DE5754';
-
-    // Si el complemento es proporcionado, se podría usar en la consulta
-    if (complemento) {
-      query += `, @Complemento = '${complemento}'`;
-    }
-  
-    const result = await this.ciudadanoRepository.query(query);
-
-    if (result && result.length > 0) {
+    // Usar parámetros para evitar inyección SQL
+      const query = `EXEC [dbo].[paBuscaCiudadanoPorCI] @DocumentoIdentidad = @0`;
+      const result = await this.ciudadanoRepository.query(query, [ci]);
       
-      ///// Si existe un solo registro ///////
-      if (result.length == 1 ) {
-
-        const idCiudadano = result[0].Ciudadano;
-
-        ///// consulta por idCiudadano para obtener datos completos ///////
-        const query2 = `EXEC [dbo].[sp_BuscaCiudadano]
-          @IdCiudadano = ${idCiudadano},
-          @pwd = '${this.clave}'
-        `;
-
-        const ciudadano:Ciudadano = await this.ciudadanoRepository.query(query2);
-
-        if (ciudadano) {
-
-          return ciudadano[0];
-
-        } else {
-          throw new NotFoundException('No existe registro en padron electoral');
-        }
-      }
-      else {
-
-        ///// Reisar aui para devolver un arrray /////////////////////
-        console.log('Devolver un Array');
-
-        const idCiudadano = result[0].Ciudadano;
-
-        ///// consulta por idCiudadano para obtener datos completos ///////
-        const query2 = `EXEC [dbo].[sp_BuscaCiudadano]
-          @IdCiudadano = ${idCiudadano},
-          @pwd = '${this.clave}'
-        `;
-
-        const ciudadano:Ciudadano = await this.ciudadanoRepository.query(query2);
-
-        if (ciudadano) {
-
-          return ciudadano[0];
-
-        } else {
-          throw new NotFoundException('No existe registro en padron electoral');
-        }
-      }
+      // console.log('Resultado de primera consulta:', result);
 
       
-    }
-    else {
-      throw new NotFoundException('No existe registro en padron electoral');
-    }
-  } catch (error) {
-      // this.logger.error(`Error al consultar ciudadano: ${error.message}`, error.stack);
+      if (result && result.length > 0) {
+        // Tomar el primer resultado (podrías ajustar esta lógica según tus necesidades)
+        const idCiudadano = result[0].Ciudadano;
+
+        // Consulta por idCiudadano para obtener datos completos
+        const query2 = `EXEC [dbo].[paBuscaPorIdCiudadano] @IdCiudadano = @0`;
+        const ciudadano = await this.ciudadanoRepository.query(query2, [idCiudadano]);
+
+        console.log('Resultado de segunda consulta:', ciudadano);
+
+        if (ciudadano && ciudadano.length > 0) {
+          return ciudadano[0];
+        } else {
+          throw new NotFoundException('No existe registro en padrón electoral (segunda consulta)');
+        }
+      } else {
+        throw new NotFoundException('No existe registro en padrón electoral');
+      }
+    } catch (error) {
+      console.error('Error en getCiudadanosFromStoredProc:', error);
       
       if (error instanceof NotFoundException) {
         throw error;
@@ -167,6 +126,5 @@ export class CiudadanosService {
       
       throw new InternalServerErrorException('Error interno del servidor');
     }
-}
-
+  }
 }

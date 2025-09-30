@@ -29,6 +29,7 @@ export class CertificadoVotanteController {
       @Param('ci') ci: number, // 'ci' obligatorio
       @Query('complemento') complemento?: string,  // 'complemento' opcional
     ) {
+
       return this.certificadoVotanteService.obtenerCertificadoVotanteGenerales(+ci, complemento);
   }
 

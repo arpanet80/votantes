@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Ciudadano } from '../models/ciudadano.model';
+import { BuscarCiudadanos } from '../models/buscar-ciudadanos.model';
+import { CiudadanoGenerales } from '../models/ciudadano-generales.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +54,42 @@ export class ApiService {
     );
   }
 
+  buscarCiudadanos(params: any): Observable<any> {
+    return this.http.post<any>(`${this.url}ciudadanos-generales2025/buscar/`, params)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 400 && error.error.total) {
+            // Error de "demasiados resultados"
+            return throwError({
+              type: 'TOO_MANY_RESULTS',
+              message: error.error.message,
+              total: error.error.total,
+              criteria: error.error.criteria,
+              suggestion: error.error.suggestion
+            });
+          } else if (error.status === 404) {
+            // Error de "no hay resultados"
+            return throwError({
+              type: 'NO_RESULTS',
+              message: error.error.message,
+              criteria: error.error.criteria,
+              suggestion: error.error.suggestion
+            });
+          } else {
+            // Otro tipo de error
+            return throwError({
+              type: 'GENERAL_ERROR',
+              message: 'Error al realizar la búsqueda. Intente nuevamente.'
+            });
+          }
+        })
+      );
+  }
+  
+/*
+  getCiudadanosByParams(params: BuscarCiudadanos): Observable<CiudadanoGenerales[]> {
+    return this.http.post<CiudadanoGenerales[]>(`${this.url}ciudadanos-generales2025/buscar/`, params);
+  }
+*/
 
 }

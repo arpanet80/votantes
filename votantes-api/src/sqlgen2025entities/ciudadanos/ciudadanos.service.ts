@@ -1,13 +1,11 @@
-import { ConsoleLogger, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConsoleLogger, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CiudadanoGenerales } from './entities/ciudadano.entity';
 import { Repository } from 'typeorm';
-
+import { BuscarCiudadanosDto } from './dto/buscar-ciudadanos.dto';
 
 @Injectable()
 export class CiudadanosGeneralesService {
-  // private readonly logger = new Logger(CiudadanoService.name);
-  private readonly clave = '0x02000000876A3961235E3145BE639AEF85CAAA940C71C1264CC818870D6967BE326C375BC82B1344F355A243193801015EEF91C7';
 
   constructor(
     @InjectRepository(CiudadanoGenerales, 'mssqlgen2025') 
@@ -15,84 +13,34 @@ export class CiudadanosGeneralesService {
   ) {}
 
   // Método para llamar al procedimiento almacenado
-  async getCiudadanosFromStoredProc(ci: number, complemento?: string) : Promise<CiudadanoGenerales> {
-    
-    //3701044 1K
-    
-    //console.log("llego ci: ", ci, complemento);
-    
-  // const clave = '0x0200000099D665269A70F3159848E3C6FFAE3569D18CD9EC445582CAC9290B20BBE2CDF0A3B377001557F913D7510B9B27DE5754';
+  async getCiudadanosFromStoredProc(ci: number, complemento?: string): Promise<CiudadanoGenerales> {
+    try {
+      // Usar parámetros para evitar inyección SQL
+      const query = `EXEC [dbo].[paBuscaCiudadanoPorCI] @DocumentoIdentidad = @0`;
+      const result = await this.ciudadanoRepository.query(query, [ci]);
 
-  try {
+      // console.log('Resultado de primera consulta:', result);
 
-    //// paBuscaCiudadano Busca al ciudadano por nombre appelido carnet etc. ////
-    var query = `EXEC [dbo].[paBuscaCiudadano] 
-      @Documento = ${ci},
-      @pwd = '${this.clave}'
-    `;
-    //@pwd = '0x0200000099D665269A70F3159848E3C6FFAE3569D18CD9EC445582CAC9290B20BBE2CDF0A3B377001557F913D7510B9B27DE5754';
-
-    // Si el complemento es proporcionado, se podría usar en la consulta
-    if (complemento) {
-      query += `, @Complemento = '${complemento}'`;
-    }
-  
-    const result = await this.ciudadanoRepository.query(query);
-
-    if (result && result.length > 0) {
-      
-      ///// Si existe un solo registro ///////
-      if (result.length == 1 ) {
-
+      if (result && result.length > 0) {
+        // Tomar el primer resultado (podrías ajustar esta lógica según tus necesidades)
         const idCiudadano = result[0].Ciudadano;
 
-        ///// consulta por idCiudadano para obtener datos completos ///////
-        const query2 = `EXEC [dbo].[sp_BuscaCiudadano]
-          @IdCiudadano = ${idCiudadano},
-          @pwd = '${this.clave}'
-        `;
+        // Consulta por idCiudadano para obtener datos completos
+        const query2 = `EXEC [dbo].[paBuscaPorIdCiudadano] @IdCiudadano = @0`;
+        const ciudadano = await this.ciudadanoRepository.query(query2, [idCiudadano]);
 
-        const ciudadano:CiudadanoGenerales = await this.ciudadanoRepository.query(query2);
+        // console.log('Resultado de segunda consulta:', ciudadano);
 
-        if (ciudadano) {
-
+        if (ciudadano && ciudadano.length > 0) {
           return ciudadano[0];
-
         } else {
-          throw new NotFoundException('No existe registro en padron electoral');
+          throw new NotFoundException('No existe registro en padrón electoral (segunda consulta)');
         }
+      } else {
+        throw new NotFoundException('No existe registro en padrón electoral');
       }
-      else {
-
-        ///// Reisar aui para devolver un arrray /////////////////////
-        console.log('Devolver un Array');
-
-        const idCiudadano = result[0].Ciudadano;
-
-        ///// consulta por idCiudadano para obtener datos completos ///////
-        const query2 = `EXEC [dbo].[sp_BuscaCiudadano]
-          @IdCiudadano = ${idCiudadano},
-          @pwd = '${this.clave}'
-        `;
-
-        const ciudadano:CiudadanoGenerales = await this.ciudadanoRepository.query(query2);
-
-        if (ciudadano) {
-
-          return ciudadano[0];
-
-        } else {
-          throw new NotFoundException('No existe registro en padron electoral');
-        }
-      }
-
-      
-    }
-    else {
-      throw new NotFoundException('No existe registro en padron electoral');
-    }
-  } catch (error) {
-      // this.logger.error(`Error al consultar ciudadano: ${error.message}`, error.stack);
+    } catch (error) {
+      console.error('Error en getCiudadanosFromStoredProc:', error);
       
       if (error instanceof NotFoundException) {
         throw error;
@@ -105,6 +53,184 @@ export class CiudadanosGeneralesService {
       
       throw new InternalServerErrorException('Error interno del servidor');
     }
-}
+  }
 
+  async getCiudadanosByParams(buscarDto: BuscarCiudadanosDto): Promise<{ data: any[], total?: number, message?: string, resultType: string }> {
+    try {
+      // Validar que se proporcionen al menos dos parámetros
+      const paramsProvided = [
+        buscarDto.nombres,
+        buscarDto.paterno,
+        buscarDto.materno,
+        buscarDto.documento,
+        buscarDto.complemento,
+        buscarDto.fechaNac
+      ].filter(param => param !== undefined && param !== '' && param !== null).length;
+      
+      if (paramsProvided < 2) {
+        throw new BadRequestException('Debe proporcionar al menos dos parámetros de búsqueda');
+      }
+
+      // Construir la consulta con parámetros
+      let query = `EXEC [dbo].[paBuscaCiudadanoV2]`;
+      const params = [];
+      
+      if (buscarDto.nombres) {
+        params.push(`@Nombres = '${buscarDto.nombres.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.paterno) {
+        params.push(`@Paterno = '${buscarDto.paterno.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.materno) {
+        params.push(`@Materno = '${buscarDto.materno.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.documento) {
+        params.push(`@Documento = '${buscarDto.documento.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.complemento) {
+        params.push(`@Complemento = '${buscarDto.complemento.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.fechaNac) {
+        params.push(`@FechaNac = '${buscarDto.fechaNac}'`);
+      }
+      
+      // Unir todos los parámetros
+      if (params.length > 0) {
+        query += ` ${params.join(', ')}`;
+      }
+      
+      // console.log('Ejecutando query:', query);
+      
+      // Ejecutar el procedimiento almacenado
+      const result = await this.ciudadanoRepository.query(query);
+      
+      // console.log('Resultado del SP:', result);
+      
+      // Verificar el tipo de resultado
+      if (result && result.length > 0) {
+        const firstResult = result[0];
+        
+        // Si es demasiados resultados
+        if (firstResult.resultType === 'TOO_MANY_RESULTS') {
+          return {
+            data: [],
+            total: firstResult.totalCount,
+            message: firstResult.message,
+            resultType: 'TOO_MANY_RESULTS'
+          };
+        }
+        
+        // Si no hay resultados
+        if (firstResult.result_type === 'NO_RESULTS') {
+          return {
+            data: [],
+            message: firstResult.message,
+            resultType: 'NO_RESULTS'
+          };
+        }
+        
+        // Si hay resultados normales (verificar si tiene las propiedades de ciudadano)
+        if (firstResult.Ciudadano) {
+          return {
+            data: result,
+            total: result.length,
+            resultType: 'SUCCESS'
+          };
+        }
+      }
+      
+      // Si no hay resultados o el formato no es el esperado
+      return {
+        data: [],
+        resultType: 'NO_RESULTS'
+      };
+    } catch (error) {
+      console.error('Error en getCiudadanosByParams:', error);
+      
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      
+      throw new InternalServerErrorException('Error interno del servidor al buscar ciudadanos');
+    }
+  }
+
+  /*
+  async getCiudadanosByParams(buscarDto: BuscarCiudadanosDto): Promise<CiudadanoGenerales[]> {
+    try {
+      // Validar que se proporcionen al menos dos parámetros
+      const paramsProvided = [
+        buscarDto.nombres,
+        buscarDto.paterno,
+        buscarDto.materno,
+        buscarDto.documento,
+        buscarDto.complemento,
+        buscarDto.fechaNac
+      ].filter(param => param !== undefined && param !== '' && param !== null).length;
+      
+      if (paramsProvided < 2) {
+        throw new BadRequestException('Debe proporcionar al menos dos parámetros de búsqueda');
+      }
+
+      // Construir la consulta con parámetros
+      let query = `EXEC [dbo].[paBuscaCiudadano]`;
+      const params = [];
+      
+      if (buscarDto.nombres) {
+        params.push(`@Nombres = '${buscarDto.nombres.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.paterno) {
+        params.push(`@Paterno = '${buscarDto.paterno.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.materno) {
+        params.push(`@Materno = '${buscarDto.materno.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.documento) {
+        params.push(`@Documento = '${buscarDto.documento.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.complemento) {
+        params.push(`@Complemento = '${buscarDto.complemento.replace(/'/g, "''")}'`);
+      }
+      
+      if (buscarDto.fechaNac) {
+        params.push(`@FechaNac = '${buscarDto.fechaNac}'`);
+      }
+      
+      // Unir todos los parámetros
+      if (params.length > 0) {
+        query += ` ${params.join(', ')}`;
+      }
+      
+      // console.log('Ejecutando query:', query);
+      
+      // Ejecutar el procedimiento almacenado
+      const result = await this.ciudadanoRepository.query(query);
+      
+      // El resultado de TypeORM para EXEC ya es el array de resultados
+      // No necesitamos procesar el "Return Value" que muestra SSMS
+      if (result && result.length > 0) {
+        return result;
+      } else {
+        throw new NotFoundException('No se encontraron ciudadanos con los criterios de búsqueda');
+      }
+    } catch (error) {
+      console.error('Error en getCiudadanosByParams:', error);
+      
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      
+      throw new InternalServerErrorException('Error interno del servidor al buscar ciudadanos');
+    }
+  }
+*/
 }
