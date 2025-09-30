@@ -110,7 +110,7 @@ export class BusquedaCiudadanoomponent {
             this.errorMensaje = error.message || 'Error al realizar la búsqueda. Intente nuevamente.';
           }
           
-          console.error('Error en la búsqueda:', error);
+          // console.error('Error en la búsqueda:', error);
         }
       });
     } else {
