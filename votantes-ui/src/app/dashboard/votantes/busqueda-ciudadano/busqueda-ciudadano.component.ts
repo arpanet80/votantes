@@ -59,6 +59,7 @@ export class BusquedaCiudadanoomponent {
     return null;
   }
 
+  
   createForm(): FormGroup {
     return this.fb.group({
       nombres: [''],
