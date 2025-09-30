@@ -6,6 +6,7 @@ export class CiudadanoGenerales {
 
     @PrimaryGeneratedColumn() // Auto-incremented primary key
     id: number;
+    
     @Column()
     Ciudadano: number;
     @Column()
